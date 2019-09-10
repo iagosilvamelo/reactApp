@@ -1,11 +1,9 @@
 // Bibliotecas
 import React, { Component } from 'react';
+import Routes from './router';
 
 // Styles
 import './app.css';
-
-// Views
-import Main from './views/main';
 
 // Components
 import Header from './components/template/Header';
@@ -15,7 +13,7 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <Main />
+        <Routes />
       </div>
     );
   }
