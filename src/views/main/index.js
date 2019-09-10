@@ -4,25 +4,40 @@ import './style.css';
 
 export default class Main extends Component {
     state = {
-        products: []
+        products: [],
+        productInfo: {},
+        page: 1
     };
 
     componentDidMount() {
         this.loadProducts();
     }
 
-    loadProducts = async () => {
-        const response = await api.get("/Product");
-        this.setState({ products: response.data.docs });
+    loadProducts = async (page = 1) => {
+        const response = await api.get(`/Product?page=${page}`);
+        const { docs, ...productInfo } = response.data;
+
+        this.setState({ products: docs, productInfo, page });
+    };
+
+    prevPade = () => {
+        const { page } = this.state;
+        if (page === 1) return;
+        const pageNumber = page - 1;
+        this.loadProducts(pageNumber);
+    };
+
+    nextPade = () => {
+        const { page, productInfo } = this.state;
+        if (page === productInfo.page) return;
+        const pageNumber = page + 1;
+        this.loadProducts(pageNumber);
     };
 
     render() {
         const { products } = this.state;
         return (
             <section>
-                <h1>Main page</h1>
-                <h3>Contagem de produtos: { products.length }</h3>
-
                 <div className="product-list">
                     {products.map( product => (
                         <article key={ product._id }>
@@ -32,6 +47,11 @@ export default class Main extends Component {
                             <a href="#">Acessar</a>
                         </article>
                     ))}
+
+                    <div className="actions">
+                        <button onClick={ this.prevPade }>Anterior</button>
+                        <button onClick={ this.nextPade }>Próximo</button>
+                    </div>
                 </div>
             </section>
         )
